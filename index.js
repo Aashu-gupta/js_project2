@@ -1,80 +1,80 @@
-const url="https://api.github.com/users";
+const url = "https://api.github.com/users";
+
+const profileContainer = document.getElementById("profileContainer");
+const loading = document.getElementById("loading");
+
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
 
 
-const searchInput= document.getElementById("searchInput");
-const searchBtn= document.getElementById("searchBtn");
-const profileContainer= document.getElementById("profileContainer");
-const loading= document.getElementById("loading");
 
+const generateProfile = (profile) => {
+  return `
+  <div class="profile_box">
+          <div class="top_section">
+            <div class="left">
+              <img
+                alt="avatar"
+                src="${profile.avatar_url}"
+              />
+              
+              <div class="self">
+                <h2>${profile.name}</h2>
+                <h2>@${profile.login}</h2>
+              </div>
+            </div>
 
-const generateProfile=(profile)=>{
-    return `    
-<div class="profile_box">
-<div class="top_section">
-  <div class="left">
-    <div class="avatar">
-      <img
-        alt="avatar"
-        src="${profile.avatar_url}"
-      />
-    </div>
-    <div class="self">
-      <h1>${profile.name}</h1>
-      <h1>@${profile.login}</h1>
-    </div>
-  </div>
-  <a href="${profile.html_url}" target="_black">
-    <button class="primary_btn">Check Profile</button>
-  </a>
-</div>
+            <a class="right" href="${profile.html_url}" target="_black">
+              <button class="primary_btn">Check Profile</button>
+            </a>
+          </div>
 
-<div class="about">
-  <h2>About</h2>
-  <p>${profile.bio}</p>
-</div>
-<div class="status">
-  <div class="status-item">
-    <h3>Followers</h3>
-    <p>${profile.followers}</p>
-  </div>
-  <div class="status-item">
-    <h3>Followings</h3>
-    <p>${profile.following}</p>
-  </div>
-  <div class="status-item">
-    <h3>Repos</h3>
-    <p>${profile.public_repos}</p>
-  </div>
-</div>
-</div>
-`
-}
+          <div class="about">
+            <h2>About</h2>
+            <p>${profile.bio}</p>
+          </div>
 
-const fetchProfile= async ()=>{
-  const username= searchInput.value ;
+          <div class="status">
+            <div class="status-item">
+              <h3>Followers</h3>
+              <p>${profile.followers}</p>
+            </div>
+            <div class="status-item">
+              <h3>Followings</h3>
+              <p>${profile.following}</p>
+            </div>
+            <div class="status-item">
+              <h3>Repos</h3>
+              <p>${profile.public_repos}</p>
+            </div>
+          </div>
+        </div>
+    `;
+};
+const fetchProfile = async () => {
+  const username = searchInput.value;
 
   loading.innerText = "loading.....";
   loading.style.color = "black";
 
-  try{
+  try {
+    console.log("hey");
     const res = await fetch(`${url}/${username}`);
     const data = await res.json();
-    if (data.bio) {
-        loading.innerText = "";
-        profileContainer.innerHTML = generateProfile(data);
-      } else {
-        loading.innerHTML = data.message;
-        loading.style.color = "red";
-        profileContainer.innerText = "";
-      }
+    if (data.login) {
+      loading.innerText = "";
+      profileContainer.innerHTML = generateProfile(data);
+    } else {
+      loading.innerHTML = data.message;
+      loading.style.color = "red";
+      profileContainer.innerText = "";
+    }
 
-      console.log("data", data);
-  }catch (error) {
+    console.log("data", data);
+  } catch (error) {
     console.log({ error });
-    loadingEl.innerText = "";
+    loadingEl.innerText = "api not worked";
   }
+};
 
-}
-
-
-searchBtn.addEventListener('click',fetchProfile);
+searchBtn.addEventListener("click", fetchProfile);
